@@ -1,0 +1,11 @@
+Clave de acceso:
+
+AKIA3JWKFEAEV32A35XK
+
+Clav de acceso secreta:
+
+24Q5XWdq3+WVD3JBKwJBMbF/vSf6ovlg14AgGmGr
+
+Default region name:
+
+us-east-1

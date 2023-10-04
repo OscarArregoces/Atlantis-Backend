@@ -1,36 +1,45 @@
-import { Login } from "../interfaces/auth.interface";
-import { User } from "../interfaces/user.interface";
-import UserModel from "../models/user";
+import { ChangePassword, Login } from "../interfaces/auth.interface";
 import { encrypt, verified } from "../utils/bcrypt.handle";
 import { generateToken } from "../utils/jwt.handle";
+import UserModel from "../models/user";
 
 
-const saveUser = async ({ email, password, name, surname, description }: User) => {
-    const checkIs = await UserModel.findOne({ email: email });
-    if (checkIs) return 'User already exist';
-    const passwordHash = await encrypt(password);
-    const responseUserRegister = await UserModel.create({ email, password: passwordHash, name, surname, description });
-    return responseUserRegister;
-}
 
 const validUser = async ({ email, password }: Login) => {
-    const userExist = await UserModel.findOne({ email })
+
+    const userExist = await UserModel.findOne({ email }).populate('person')
     if (!userExist) return "User not exist";
 
     const passwordHash = userExist.password;
     const checkCredential = await verified(password, passwordHash);
-
+    console.log(userExist)
     if (!checkCredential) return "Incorrect credential";
     const token = generateToken(userExist.email);
     const data = {
         token,
         user: {
-            id: userExist._id,
-            name: userExist.name,
-            surname: userExist.surname,
+            _id: userExist._id,
+            name: userExist.person.name,
+            person: userExist.person._id
         }
     }
     return data;
 }
+const validPassword = async ({ id, password, newPassword }: ChangePassword) => {
 
-export { saveUser, validUser };
+    const userExist = await UserModel.findOne({ _id: id });
+    if (!userExist) return "User not exist";
+
+    const passwordHash = userExist.password;
+    const checkCredential = await verified(password, passwordHash);
+
+    if (!checkCredential) return "Incorrect password";
+
+    const newPasswordHash = await encrypt(newPassword);
+
+    const userUpdated = await UserModel.findOneAndUpdate({ _id: id }, { password: newPasswordHash }, { new: true })
+
+    return userUpdated;
+}
+
+export { validUser, validPassword };

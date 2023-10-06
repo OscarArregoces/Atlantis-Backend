@@ -10,17 +10,17 @@ const findAllProducts = async () => {
     return products;
 };
 const findProductById = async (id: string) => {
-    const product = ProductModel.findOne({ _id: id }).populate('category');
+    const product = await ProductModel.findOne({ _id: id }).populate('category');
     if (!product) return 'Product not exist';
     return product;
 };
 const updateProductById = async (id: string, dataProduct: Product) => {
-    const newProduct = ProductModel.findOneAndUpdate({ _id: id }, dataProduct, { new: true });
+    const newProduct = await ProductModel.findOneAndUpdate({ _id: id }, dataProduct, { new: true });
     if (!newProduct) return 'Product not exist';
     return newProduct;
 };
 const deleteProductById = async (id: string) => {
-    const newProduct = ProductModel.findOneAndDelete({ _id: id });
+    const newProduct = await ProductModel.findOneAndDelete({ _id: id });
     if (!newProduct) return 'Product not exist';
     return newProduct;
 };

@@ -10,14 +10,11 @@ const validTokenSesion = (req: RequestExt, res: Response, next: NextFunction) =>
         if (!req.headers.authorization) return httpResponse.Unauthorized(res, 'Token is required')
         const jwtByUser = req.headers.authorization || '';
         const jwt = jwtByUser.split(' ').pop();
-        console.log('jwtByUser',jwtByUser)
-        console.log('jwt',jwt)
         const isUser = verifyToken(`${jwt}`) as { id: string };;
         if (!isUser) {
             httpResponse.Unauthorized(res, 'Token not valid')
         } else {
             req.user = isUser;
-            console.log(isUser)
             next();
         }
     } catch (e) {

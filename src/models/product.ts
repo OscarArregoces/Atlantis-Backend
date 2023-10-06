@@ -6,6 +6,10 @@ const ProductSchema = new Schema(
             type: String,
             require: true
         },
+        brand: {
+            type: String,
+            require: true
+        },
         quantity: {
             type: Number,
             require: true

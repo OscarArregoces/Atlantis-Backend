@@ -3,6 +3,7 @@ import { Category } from "./category";
 
 export interface Product {
     name: string;
+    brand: string;
     quantity: number;
     total_price: number;
     unit_price: number;

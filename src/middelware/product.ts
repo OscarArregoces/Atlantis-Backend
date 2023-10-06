@@ -5,8 +5,9 @@ import { HttpResponse } from "../utils/errors/response";
 const httpResponse = new HttpResponse();
 
 const validFieldsCreateProduct = ({ body }: Request, res: Response, next: NextFunction) => {
-    const { name, quantity, total_price, unit_price, unit_cost, supplier, img_url, category, } = body;
+    const { name, brand, quantity, total_price, unit_price, unit_cost, supplier, img_url, category, } = body;
     if (!name) return httpResponse.BadRequest(res, 'name is required');
+    if (!brand) return httpResponse.BadRequest(res, 'brand is required');
     if (!quantity) return httpResponse.BadRequest(res, 'quantity is required');
     if (!total_price) return httpResponse.BadRequest(res, 'total_price is required');
     if (!unit_price) return httpResponse.BadRequest(res, 'unit_price is required');
@@ -24,9 +25,10 @@ const validFieldsFindProduct = ({ params }: Request, res: Response, next: NextFu
 };
 const validFieldsPatchProduct = ({ params, body }: Request, res: Response, next: NextFunction) => {
     const { id } = params;
-    const { name, quantity, total_price, unit_price, unit_cost, supplier, img_url, category, } = body;
+    const { name, brand, quantity, total_price, unit_price, unit_cost, supplier, img_url, category, } = body;
     if (!isValidObjectId(id)) return httpResponse.BadRequest(res, 'ID invalid');
     if (!name) return httpResponse.BadRequest(res, 'name is required');
+    if (!brand) return httpResponse.BadRequest(res, 'brand is required');
     if (!quantity) return httpResponse.BadRequest(res, 'quantity is required');
     if (!total_price) return httpResponse.BadRequest(res, 'total_price is required');
     if (!unit_price) return httpResponse.BadRequest(res, 'unit_price is required');

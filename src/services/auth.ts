@@ -13,7 +13,7 @@ const validUser = async ({ email, password }: Login) => {
     const passwordHash = userExist.password;
     const checkCredential = await verified(password, passwordHash);
     if (!checkCredential) return "Incorrect credential";
-    const token = generateToken(userExist.email);
+    const token = generateToken(userExist._id.toString());
     const data = {
         token,
         user: {

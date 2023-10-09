@@ -1,5 +1,4 @@
-import { Auth } from "../interfaces/auth.interface";
-import { Person } from "../interfaces/person.interface"
+import { Member, Person } from "../interfaces/person.interface"
 import { User } from "../interfaces/user.interface";
 import PersonModel from "../models/person";
 import RoleModel from "../models/role";
@@ -14,8 +13,8 @@ const createUserByPerson = async ({ email, password, roles, person }: User) => {
     const checkIsUser = await UserModel.findOne({ email: email, person: person._id });
     if (checkIsUser) return 'User already exist';
 
-
     const passwordHash = await encrypt(password);
+    
     if (roles) {
         const foundRoles = await RoleModel.find({ name: { $in: roles } });
         roles = foundRoles.map(role => role._id)
@@ -40,46 +39,73 @@ const findPersons = async () => {
     return personsFound;
 }
 
-const updatePerson = async (id: string, userData: User, personData: Person) => {
+const updatePerson = async (id: string, memberData: Member) => {
 
-    const newUser = await UserModel.findOneAndUpdate({ _id: id }, userData, { new: true });
-    const newPerson = await PersonModel.findOneAndUpdate({ _id: newUser?.person }, personData, { new: true })
+
+    const newUser = await UserModel.findOneAndUpdate({ _id: id }, {
+        email: memberData.email,
+        password: memberData.password
+
+    }, { new: true });
+    const newPerson = await PersonModel.findOneAndUpdate({ _id: newUser?.person }, {
+        name: memberData.name,
+        surname: memberData.surname,
+        birthday: memberData.birthday,
+        type_document: memberData.type_document,
+        no_document: memberData.no_document,
+        country: memberData.country,
+        city: memberData.city,
+        phone: memberData.phone,
+        img_url: memberData.img_url,
+    }, { new: true });
+    
     if (!newUser) return 'USER_NOT_FOUND';
-    if (!newPerson) return 'USER_NOT_FOUND';
-
+    if (!newPerson) return 'PERSON_NOT_FOUND';
     const response = {
-        user: {
-            "_id": newUser._id,
-            "email": newUser.email,
-            "password": newUser.password,
-            "roles": newUser.roles,
-        },
-        person: {
-            "_id": newPerson._id,
-            "name": newPerson.name,
-            "surname": newPerson.surname,
-        }
+        user: newUser,
+        person: newPerson
     }
     return response;
 }
 const deletePerson = async (id: string) => {
 
-    const response = await UserModel.findOneAndDelete({ _id: id });
-    if (!response) return 'USER_NOT_FOUND';
-    const responseMessage = 'User deleted';
-    return responseMessage;
+    const responsePerson = await PersonModel.findOneAndDelete({ _id: id });
+    if (!responsePerson) return 'PERSON_NOT_FOUND';
+    const responseUser = await UserModel.deleteMany({ person: responsePerson.id });
+    return 'Delete successful';
 }
 
-const createNewMember = async (userData: Auth, personData: Person) => {
+const createNewMember = async (memberData: Member) => {
+    console.log(memberData);
 
-    const userExist = await UserModel.findOne({ email: userData.email });
+
+    const userExist = await UserModel.findOne({ email: memberData.email });
+    const personExist = await PersonModel.findOne({
+        $or: [
+            { no_document: memberData.no_document },
+            { phone: memberData.phone }
+        ]
+    });
+
     if (userExist) return 'User already exist';
+    if (personExist) return 'Person already exist';
 
-    const newPerson = await PersonModel.create(personData);
+    const newPerson = await PersonModel.create({
+        name: memberData.name,
+        surname: memberData.surname,
+        birthday: memberData.birthday,
+        type_document: memberData.type_document,
+        no_document: memberData.no_document,
+        country: memberData.country,
+        city: memberData.city,
+        phone: memberData.phone,
+        img_url: memberData.img_url,
+    });
     const userRol = await RoleModel.findOne({ name: 'user' });
+    const passwordHash = await encrypt(memberData.password);
     const newUser = await UserModel.create({
-        email: userData.email,
-        password: userData.password,
+        email: memberData.email,
+        password: passwordHash,
         person: newPerson._id,
         roles: [userRol!._id],
     });

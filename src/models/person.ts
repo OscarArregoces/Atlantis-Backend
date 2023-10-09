@@ -29,6 +29,9 @@ const PersonSchema = new Schema(
             type: String,
             unique: true
         },
+        img_url:{
+            type: String,
+        }
     },
     {
         versionKey: false,

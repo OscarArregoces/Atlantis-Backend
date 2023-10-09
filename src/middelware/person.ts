@@ -17,9 +17,14 @@ const validFieldsGetPerson = ({ params }: Request, res: Response, next: NextFunc
     next();
 }
 const validFieldsPatchPerson = ({ body }: Request, res: Response, next: NextFunction) => {
-    const { userData, personData } = body;
-    if (!userData) return httpResponse.BadRequest(res, 'userData is required');
-    if (!personData) return httpResponse.BadRequest(res, 'personData is required');
+    const { email, password, person, name, surname, birthday, type_document, no_document, country, city, phone, img_url } = body;
+    if (!email) return httpResponse.BadRequest(res, 'email is required');
+    if (!password) return httpResponse.BadRequest(res, 'password is required');
+    if (!name) return httpResponse.BadRequest(res, 'name is required');
+    if (!surname) return httpResponse.BadRequest(res, 'surname is required');
+    if (!no_document) return httpResponse.BadRequest(res, 'no_document is required');
+    if (!phone) return httpResponse.BadRequest(res, 'phone is required');
+    if (!city) return httpResponse.BadRequest(res, 'city is required');
     next();
 }
 const validFieldsDeleteUser = ({ params }: Request, res: Response, next: NextFunction) => {
@@ -27,12 +32,15 @@ const validFieldsDeleteUser = ({ params }: Request, res: Response, next: NextFun
     if (!isValidObjectId(id)) return httpResponse.BadRequest(res, 'ID invalid');
     next();
 }
-const validFieldsCreateMember = ({ body }: Request, res: Response, next: NextFunction) => {
-    const { userData, personData } = body;
-    if (!userData) return httpResponse.BadRequest(res, 'userData is required');
-    if (!personData) return httpResponse.BadRequest(res, 'personData is required');
-    if (!userData.email) return httpResponse.BadRequest(res, 'userData.email is required');
-    if (!userData.password) return httpResponse.BadRequest(res, 'userData.password is required');
+const validFieldsCreateMember = ({body}: Request, res: Response, next: NextFunction) => {
+    const { email, password, person, name, surname, birthday, type_document, no_document, country, city, phone, img_url } = body;
+    if (!email) return httpResponse.BadRequest(res, 'email is required');
+    if (!password) return httpResponse.BadRequest(res, 'password is required');
+    if (!name) return httpResponse.BadRequest(res, 'name is required');
+    if (!surname) return httpResponse.BadRequest(res, 'surname is required');
+    if (!no_document) return httpResponse.BadRequest(res, 'no_document is required');
+    if (!phone) return httpResponse.BadRequest(res, 'phone is required');
+    if (!city) return httpResponse.BadRequest(res, 'city is required');
     next();
 }
 

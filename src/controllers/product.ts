@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { HttpResponse } from "../utils/errors/response";
 import { addProduct, deleteProductById, findAllProducts, findProductById, updateProductById } from "../services/product";
-
 const httpResponse = new HttpResponse();
+
 
 const createProduct = async ({ body }: Request, res: Response) => {
     const response = await addProduct(body);

@@ -8,7 +8,7 @@ export const createRoles = async () => {
         const countRoles = await RoleModel.estimatedDocumentCount();
         if (countRoles > 0) return;
 
-        const values = await Promise.all([
+        await Promise.all([
             new RoleModel({ name: 'user' }).save(),
             new RoleModel({ name: 'admin' }).save(),
         ])

@@ -34,7 +34,7 @@ const patchPerson = async (req: Request, res: Response) => {
 const deleteUser = async ({ params }: Request, res: Response) => {
     const { id } = params;
     const response = await deletePerson(id);
-    if (response === 'PERSON_NOT_FOUND') return httpResponse.NotFound(res, response);
+    if (response === 'USER_NOT_FOUND') return httpResponse.NotFound(res, response);
     httpResponse.Ok(res, response);
 }
 

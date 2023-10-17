@@ -4,8 +4,9 @@ import { addProduct, deleteProductById, findAllProducts, findProductById, update
 const httpResponse = new HttpResponse();
 
 
-const createProduct = async ({ body }: Request, res: Response) => {
-    const response = await addProduct(body);
+const createProduct = async (req: Request, res: Response) => {
+    const { body } = req;
+    const response = await addProduct({ ...body, img_url: `/products/${req.file?.filename}` });
     httpResponse.Ok(res, response);
 };
 const findProducts = async (req: Request, res: Response) => {
@@ -18,9 +19,10 @@ const findProduct = async ({ params }: Request, res: Response) => {
     if (response === 'Product not exist') return httpResponse.NotFound(res, response);
     httpResponse.Ok(res, response);
 };
-const patchProduct = async ({ params, body }: Request, res: Response) => {
+const patchProduct = async (req: Request, res: Response) => {
+    const { params, body } = req;
     const { id } = params;
-    const response = await updateProductById(id, body);
+    const response = await updateProductById(id, {...body, img_url: `/products/${req.file?.filename}`});
     if (response === 'Product not exist') return httpResponse.NotFound(res, response);
     httpResponse.Ok(res, response);
 };

@@ -6,8 +6,8 @@ const storage = (folderName: string) => {
             cb(null, `uploads/${folderName}`)
         },
         filename: function (req, file, cb) {
-            cb(null, `${Date.now()}`)
-            // cb(null, Date.now() + '-' + file.originalname)
+            console.log(file);
+            cb(null, `${Date.now()}-${file.originalname}`)
         }
     })
 };

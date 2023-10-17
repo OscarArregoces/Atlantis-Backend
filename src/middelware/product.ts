@@ -13,7 +13,6 @@ const validFieldsCreateProduct = ({ body }: Request, res: Response, next: NextFu
     if (!unit_price) return httpResponse.BadRequest(res, 'unit_price is required');
     if (!unit_cost) return httpResponse.BadRequest(res, 'unit_cost is required');
     if (!supplier) return httpResponse.BadRequest(res, 'supplier is required');
-    if (!img_url) return httpResponse.BadRequest(res, 'img_url is required');
     if (!category) return httpResponse.BadRequest(res, 'category is required');
     next();
 };
@@ -34,7 +33,6 @@ const validFieldsPatchProduct = ({ params, body }: Request, res: Response, next:
     if (!unit_price) return httpResponse.BadRequest(res, 'unit_price is required');
     if (!unit_cost) return httpResponse.BadRequest(res, 'unit_cost is required');
     if (!supplier) return httpResponse.BadRequest(res, 'supplier is required');
-    if (!img_url) return httpResponse.BadRequest(res, 'img_url is required');
     if (!category) return httpResponse.BadRequest(res, 'category is required');
     next();
 };

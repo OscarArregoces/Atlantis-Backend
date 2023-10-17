@@ -14,7 +14,7 @@ const createUserByPerson = async ({ email, password, roles, person }: User) => {
     if (checkIsUser) return 'User already exist';
 
     const passwordHash = await encrypt(password);
-    
+
     if (roles) {
         const foundRoles = await RoleModel.find({ name: { $in: roles } });
         roles = foundRoles.map(role => role._id)
@@ -58,7 +58,7 @@ const updatePerson = async (id: string, memberData: Member) => {
         phone: memberData.phone,
         img_url: memberData.img_url,
     }, { new: true });
-    
+
     if (!newUser) return 'USER_NOT_FOUND';
     if (!newPerson) return 'PERSON_NOT_FOUND';
     const response = {
@@ -67,18 +67,21 @@ const updatePerson = async (id: string, memberData: Member) => {
     }
     return response;
 }
-const deletePerson = async (id: string) => {
+const deletePerson = async (idUser: string) => {
 
-    const responsePerson = await PersonModel.findOneAndDelete({ _id: id });
-    if (!responsePerson) return 'PERSON_NOT_FOUND';
-    const responseUser = await UserModel.deleteMany({ person: responsePerson.id });
-    return 'Delete successful';
+    const userFound = await UserModel.findOne({ _id: idUser });
+    if (!userFound) return 'USER_NOT_FOUND';
+    const countUserByPerson = await UserModel.countDocuments({ person: userFound.person });
+    if (countUserByPerson > 1) {
+        await UserModel.findOneAndDelete({ _id: idUser });
+    } else {
+        await UserModel.findOneAndDelete({ _id: idUser });
+        await PersonModel.findOneAndDelete({ _id: userFound.person });
+    }
+    return 'Deleted successful';
 }
 
 const createNewMember = async (memberData: Member) => {
-    console.log(memberData);
-
-
     const userExist = await UserModel.findOne({ email: memberData.email });
     const personExist = await PersonModel.findOne({
         $or: [

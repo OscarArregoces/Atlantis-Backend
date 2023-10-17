@@ -14,7 +14,7 @@ const validTokenSesion = async (req: Request, res: Response, next: NextFunction)
         const isUser = verifyToken(`${jwt}`) as { id: string };
         if (!isUser) return httpResponse.Unauthorized(res, 'Token not valid');
         const userExist = await UserModel.findOne({ _id: isUser.id });
-        if (!userExist) return httpResponse.Unauthorized(res, 'User not exist');
+        if (!userExist) return httpResponse.Unauthorized(res, 'Token not valid');
         next();
     } catch (e) {
         res.status(400).send('Invalid Token')

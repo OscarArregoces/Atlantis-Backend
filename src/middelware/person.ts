@@ -19,7 +19,7 @@ const validFieldsGetPerson = ({ params }: Request, res: Response, next: NextFunc
 const validFieldsPatchPerson = ({ body }: Request, res: Response, next: NextFunction) => {
     const { email, password, person, name, surname, birthday, type_document, no_document, country, city, phone, img_url } = body;
     if (!email) return httpResponse.BadRequest(res, 'email is required');
-    if (!password) return httpResponse.BadRequest(res, 'password is required');
+    // if (!password) return httpResponse.BadRequest(res, 'password is required');
     if (!name) return httpResponse.BadRequest(res, 'name is required');
     if (!surname) return httpResponse.BadRequest(res, 'surname is required');
     if (!no_document) return httpResponse.BadRequest(res, 'no_document is required');

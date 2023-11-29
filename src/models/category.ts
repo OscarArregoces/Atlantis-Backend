@@ -8,6 +8,14 @@ const CategorySchema = new Schema(
             type: String,
             unique: true
         }
+        // ,
+        // subCategory: [
+        //     {
+        //         ref: 'subcategory',
+        //         type: Schema.Types.ObjectId,
+        //         default: []
+        //     }
+        // ]
     },
     {
         timestamps: true,

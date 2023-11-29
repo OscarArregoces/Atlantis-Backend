@@ -35,7 +35,7 @@ const findPerson = async (id: string) => {
     return personFound;
 }
 const findPersons = async () => {
-    const personsFound = await UserModel.find().populate('person');
+    const personsFound = await UserModel.find().populate('person').sort({ updatedAt: -1 });
     return personsFound;
 }
 

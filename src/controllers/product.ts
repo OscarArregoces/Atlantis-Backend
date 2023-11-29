@@ -22,7 +22,12 @@ const findProduct = async ({ params }: Request, res: Response) => {
 const patchProduct = async (req: Request, res: Response) => {
     const { params, body } = req;
     const { id } = params;
-    const response = await updateProductById(id, {...body, img_url: `/products/${req.file?.filename}`});
+    let response;
+    if (req.file) {
+        response = await updateProductById(id, { ...body, img_url: `/products/${req.file?.filename}` });
+    } else {
+        response = await updateProductById(id, body);
+    }
     if (response === 'Product not exist') return httpResponse.NotFound(res, response);
     httpResponse.Ok(res, response);
 };

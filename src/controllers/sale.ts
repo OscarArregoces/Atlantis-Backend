@@ -7,7 +7,7 @@ const httpResponse = new HttpResponse();
 
 const createSale = async ({ body }: Request, res: Response) => {
     const response = await addNewSale(body);
-    if (response === typeof ('')) return httpResponse.BadRequest(res, response);
+    if (typeof response === 'string') return httpResponse.BadRequest(res, response);
     httpResponse.Ok(res, response);
 };
 const findSales = async (req: Request, res: Response) => {

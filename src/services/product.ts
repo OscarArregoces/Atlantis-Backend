@@ -6,11 +6,21 @@ const addProduct = async (dataProduct: Product) => {
     return newProduct;
 };
 const findAllProducts = async () => {
-    const products = await ProductModel.find().populate('category');
+    const products = await ProductModel.find().populate([{
+        path: 'subcategory',
+        populate: {
+            path: 'category',
+        },
+    }, 'supplier']).sort({ updatedAt: -1 });
     return products;
 };
 const findProductById = async (id: string) => {
-    const product = await ProductModel.findOne({ _id: id }).populate('category');
+    const product = await ProductModel.findOne({ _id: id }).populate([{
+        path: 'subcategory',
+        populate: {
+            path: 'category',
+        },
+    }, 'supplier']);
     if (!product) return 'Product not exist';
     return product;
 };

@@ -24,7 +24,19 @@ export const createUserAndPerson = async () => {
 
         const password = '12345'
         const roles = await RoleModel.find({});
-        const newPersona = new PersonModel({name: 'Admin'});
+        const newPersona = new PersonModel(
+            {
+                "name": "User",
+                "surname": "Admin",
+                "birthday": "01/01/2023",
+                "type_document": "cc",
+                "no_document": "1.111.111.111",
+                "country": "Colombia",
+                "city": "Riohacha",
+                "phone": "1111111111",
+                "img_url": "/static/default.png",
+            }
+        );
         await newPersona.save();
         const passwordHash = await encrypt(password);
         const newUser = new UserModel({

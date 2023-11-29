@@ -25,7 +25,12 @@ const getPerson = async ({ params }: Request, res: Response) => {
 const patchPerson = async (req: Request, res: Response) => {
     const { params, body } = req;
     const { id } = params;
-    const response = await updatePerson(id, { ...body, img_url: `/avatars/${req.file?.filename}` });
+    let response;
+    if(req.file){
+        response = await updatePerson(id, { ...body, img_url: `/avatars/${req.file?.filename}` });
+    }else{
+        response = await updatePerson(id, body);
+    }
     if (response === 'USER_NOT_FOUND') return httpResponse.NotFound(res, response);
     if (response === 'PERSON_NOT_FOUND') return httpResponse.NotFound(res, response);
     httpResponse.Ok(res, response);

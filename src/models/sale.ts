@@ -10,10 +10,14 @@ const SaleSchema = new Schema(
             type: String,
             require: true
         },
+        totalSale: {
+            type: Number,
+            require: true
+        },
         products: [
             {
                 product: {
-                    type: Types.ObjectId,
+                    type: Schema.Types.ObjectId,
                     ref: 'product',
                     required: true
                 },

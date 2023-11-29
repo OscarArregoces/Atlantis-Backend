@@ -6,15 +6,15 @@ const ProductSchema = new Schema(
             type: String,
             require: true
         },
+        reference:{
+            type: String,
+            require: true
+        },
         brand: {
             type: String,
             require: true
         },
         quantity: {
-            type: Number,
-            require: true
-        },
-        total_price: {
             type: Number,
             require: true
         },
@@ -26,17 +26,17 @@ const ProductSchema = new Schema(
             type: Number,
             require: true
         },
-        supplier: {
-            type: String,
-            require: true
-        },
         img_url: {
             type: String,
             require: true
         },
-        category: {
-            type: Types.ObjectId,
-            ref: 'category'
+        subcategory: {
+            type: Schema.Types.ObjectId,
+            ref: 'subcategory'
+        },
+        supplier: {
+            type: Schema.Types.ObjectId,
+            ref: 'supplier'
         }
     },
     {

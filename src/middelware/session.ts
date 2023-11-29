@@ -12,12 +12,12 @@ const validTokenSesion = async (req: Request, res: Response, next: NextFunction)
         const jwtByUser = req.headers.authorization || '';
         const jwt = jwtByUser.split(' ').pop();
         const isUser = verifyToken(`${jwt}`) as { id: string };
-        if (!isUser) return httpResponse.Unauthorized(res, 'Token not valid');
+        if (!isUser) return httpResponse.Unauthorized(res, 'Invalid Token');
         const userExist = await UserModel.findOne({ _id: isUser.id });
-        if (!userExist) return httpResponse.Unauthorized(res, 'Token not valid');
+        if (!userExist) return httpResponse.Unauthorized(res, 'Invalid Token');
         next();
     } catch (e) {
-        res.status(400).send('Invalid Token')
+        return httpResponse.BadRequest(res, 'Invalid Token');
     }
 }
 

@@ -15,10 +15,10 @@ const UserSchema = new Schema<User>(
         },
         roles: [{
             ref: 'role',
-            type: Types.ObjectId
+            type: Schema.Types.ObjectId
         }],
         person: {
-            type: Types.ObjectId,
+            type: Schema.Types.ObjectId,
             ref: 'person',
         }
     }

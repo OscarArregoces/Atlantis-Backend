@@ -7,7 +7,7 @@ import UserModel from "../models/user";
 
 const validUser = async ({ email, password }: Login) => {
 
-    const userExist = await UserModel.findOne({ email }).populate('person')
+    const userExist = await UserModel.findOne({ email: email }).populate('person')
     if (!userExist) return "User not exist";
 
     const passwordHash = userExist.password;
@@ -18,7 +18,7 @@ const validUser = async ({ email, password }: Login) => {
         token,
         user: {
             _id: userExist._id,
-            name: userExist.person.name,
+            name: `${userExist.person.name} ${userExist.person.surname}` ,
             person: userExist.person._id
         }
     }

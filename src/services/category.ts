@@ -8,7 +8,7 @@ const createNewCategory = async (name: string) => {
     return response;
 };
 const findAllCategories = async () => {
-    const response = await CategoryModel.find();
+    const response = await CategoryModel.find().sort({ updatedAt: -1 });
     return response;
 };
 const updateCategoryById = async (id: string, dataCategory: Category) => {

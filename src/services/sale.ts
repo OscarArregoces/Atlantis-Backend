@@ -5,10 +5,8 @@ import { SaleModel } from "../models/sale";
 
 const addNewSale = async (dataSale: Sale) => {
     const { products } = dataSale;
-
     let allProductsValid = true;
     let currentProduct: string | undefined = '';
-
     for (const productData of products) {
         const productId = productData.product;
         const quantityRequested = productData.quantity;
@@ -21,25 +19,33 @@ const addNewSale = async (dataSale: Sale) => {
             break;
         }
     }
-
     if (!allProductsValid) {
         return `El producto [${currentProduct}] no tiene cantidades suficientes`
     }
-
     const newSale = await SaleModel.create(dataSale);
-
     for (const productData of products) {
         const productId = productData.product;
         const quantityRequested = productData.quantity;
 
         await ProductModel.findByIdAndUpdate(productId, { $inc: { quantity: -quantityRequested } });
     }
-
     return newSale;
 }
 
 const findAllSales = async () => {
-    const sales = await SaleModel.find();
+    const sales = await SaleModel.find().populate(
+        [
+            "products.product",
+            {
+                path: 'products.product',
+                populate: {
+                    path: 'subcategory',
+                    populate: {
+                        path: 'category',
+                    }
+                }
+            }
+        ]).sort({ updatedAt: -1 });
     return sales;
 };
 const findSaleById = async (id: string) => {

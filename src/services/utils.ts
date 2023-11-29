@@ -4,8 +4,88 @@ import { mergeProductsInfo } from "../utils/mergeProducts";
 import { DateSales, ProductInfo } from "../interfaces/utils";
 
 
-const economyService = () => {
-  return "FUNCIONANDO"
+const economyService = async () => {
+  // Obtener la lista de productos únicos
+  const products: string[] = await ProductModel.find().distinct('name');
+
+  // Inicializar arrays y variables para almacenar resultados
+  let tableRows: any[] = [];
+  let totalGenerated: number = 0;
+  let totalToGenerate: number = 0;
+  let totalCurrentQuantity: number = 0;
+  let totalQuantitySold: number = 0;
+  let totalInvested: number = 0;
+
+  // Iterar sobre cada producto único
+  for (const productName of products) {
+    // Obtener información del producto
+    const productInfo = await ProductModel.findOne({ name: productName });
+
+    if (!productInfo) {
+      return;
+    }
+
+    // Obtener cantidad actual de productos
+    const currentQuantity: number = productInfo.quantity ?? 0;
+
+    // Obtener ventas del producto
+    const sales = await SaleModel.find({ 'products.product': productInfo._id });
+
+    // Calcular cantidad vendida y generada
+    let quantitySold: number = 0;
+    let generated: number = 0;
+
+    sales.forEach((sale) => {
+      const productSale = sale.products.find((p) => p.product.toString() === productInfo._id.toString());
+
+      if (productSale) {
+        const saleQuantity = productSale.quantity || 0;
+        const unitPrice = productInfo.unit_price;
+
+        if (unitPrice !== undefined) {
+          quantitySold += saleQuantity;
+          generated += unitPrice * saleQuantity;
+        } else {
+          console.error(`Unit price is undefined for product: ${productName}`);
+        }
+      }
+    });
+    // Calcular por generar
+    const toGenerate: number = productInfo.unit_price !== undefined ? productInfo.unit_price * currentQuantity : 0;
+
+    // Agregar a la lista de filas de tabla
+    tableRows.push({
+      product: productName,
+      current_quantity: currentQuantity,
+      quantity_sold: quantitySold,
+      unit_price: productInfo.unit_price,
+      unit_cost: productInfo.unit_cost,
+      generated: generated,
+      to_generate: toGenerate,
+    });
+
+    // Actualizar totales
+    totalGenerated += generated;
+    totalToGenerate += toGenerate;
+    totalCurrentQuantity += currentQuantity;
+    totalQuantitySold += quantitySold;
+    totalInvested += productInfo.unit_cost !== undefined ? productInfo.unit_cost : 0;
+  }
+
+  // Construir resultado final
+  const result = {
+    tableRows: tableRows,
+    deductions: {
+      revenue_generated: totalGenerated,
+      to_generate: totalToGenerate,
+      current_quantity_products: totalCurrentQuantity,
+      quantity_products_sold: totalQuantitySold,
+      invested: totalInvested,
+    },
+  };
+
+  // Enviar resultado como respuesta
+  return result;
 }
 
 const dashboardGraphicService = async () => {

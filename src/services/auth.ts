@@ -19,7 +19,9 @@ const validUser = async ({ email, password }: Login) => {
         user: {
             _id: userExist._id,
             name: `${userExist.person.name} ${userExist.person.surname}` ,
-            person: userExist.person._id
+            person: userExist.person._id,
+            img_url: userExist.person.img_url,
+            email: userExist.email
         }
     }
     return data;

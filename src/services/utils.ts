@@ -3,12 +3,9 @@ import { SaleModel } from "../models/sale"
 import { mergeProductsInfo } from "../utils/mergeProducts";
 import { DateSales, ProductInfo } from "../interfaces/utils";
 
-
 const economyService = async () => {
-  // Obtener la lista de productos únicos
   const products: string[] = await ProductModel.find().distinct('name');
 
-  // Inicializar arrays y variables para almacenar resultados
   let tableRows: any[] = [];
   let totalGenerated: number = 0;
   let totalToGenerate: number = 0;
@@ -16,22 +13,17 @@ const economyService = async () => {
   let totalQuantitySold: number = 0;
   let totalInvested: number = 0;
 
-  // Iterar sobre cada producto único
   for (const productName of products) {
-    // Obtener información del producto
     const productInfo = await ProductModel.findOne({ name: productName });
 
     if (!productInfo) {
       return;
     }
 
-    // Obtener cantidad actual de productos
     const currentQuantity: number = productInfo.quantity ?? 0;
 
-    // Obtener ventas del producto
     const sales = await SaleModel.find({ 'products.product': productInfo._id });
 
-    // Calcular cantidad vendida y generada
     let quantitySold: number = 0;
     let generated: number = 0;
 
@@ -50,10 +42,8 @@ const economyService = async () => {
         }
       }
     });
-    // Calcular por generar
     const toGenerate: number = productInfo.unit_price !== undefined ? productInfo.unit_price * currentQuantity : 0;
 
-    // Agregar a la lista de filas de tabla
     tableRows.push({
       product: productName,
       current_quantity: currentQuantity,
@@ -64,7 +54,6 @@ const economyService = async () => {
       to_generate: toGenerate,
     });
 
-    // Actualizar totales
     totalGenerated += generated;
     totalToGenerate += toGenerate;
     totalCurrentQuantity += currentQuantity;
@@ -72,7 +61,6 @@ const economyService = async () => {
     totalInvested += productInfo.unit_cost !== undefined ? productInfo.unit_cost : 0;
   }
 
-  // Construir resultado final
   const result = {
     tableRows: tableRows,
     deductions: {
@@ -84,11 +72,20 @@ const economyService = async () => {
     },
   };
 
-  // Enviar resultado como respuesta
   return result;
 }
 
 const dashboardGraphicService = async () => {
+  const sales = await SaleModel.find({});
+  if (sales.length === 0) {
+    const response = [
+      {
+        name: "Sin productos"
+      }
+    ]
+    return response;
+  }
+
 
   let salesByDate = await SaleModel.aggregate([
     {
@@ -109,6 +106,7 @@ const dashboardGraphicService = async () => {
   if (salesByDate.length > 7) {
     salesByDate = salesByDate.slice(0, 7)
   }
+
 
   const dataSorted: DateSales[] = [];
 
@@ -159,13 +157,22 @@ const dashboardGraphicTranslateService = async (nameProducts: string[]) => {
   return names;
 }
 const dashboardRankingProductsService = async () => {
+  const existSales = await SaleModel.find({});
+  if (existSales.length === 0) {
+    const response = [{
+      productDetails: { name: "No hay productos vendidos" },
+      totalQuantity: 0,
+      totalRevenue: 0,
+    }]
+    return response;
+  }
   const result = await SaleModel.aggregate([
     {
       $unwind: '$products'
     },
     {
       $lookup: {
-        from: 'products', // Asegúrate de usar el nombre correcto de tu colección de productos
+        from: 'products',
         localField: 'products.product',
         foreignField: '_id',
         as: 'productDetails'
@@ -193,7 +200,7 @@ const dashboardRankingProductsService = async () => {
     },
     {
       $lookup: {
-        from: 'products', // Asegúrate de usar el nombre correcto de tu colección de productos
+        from: 'products',
         localField: '_id',
         foreignField: '_id',
         as: 'productDetails'
@@ -214,6 +221,53 @@ const dashboardRankingProductsService = async () => {
 }
 
 const dashboardItemsService = async () => {
+
+  const existProducts = await ProductModel.find({});
+  const existSales = await SaleModel.find({});
+
+  if (existProducts.length === 0) {
+    const response = [
+      {
+        type: "Productos",
+        total_productos: 0,
+        tipo_productos: 0,
+      },
+      {
+        type: "Ingresos",
+        generados: 0,
+        por_generar: 0,
+      },
+      {
+        type: "Ventas",
+        generadas: 0,
+        por_generar: 0,
+      }
+    ]
+    return response
+  }
+  if (existProducts.length > 0 && existSales.length === 0) {
+    const tiposProductos = await ProductModel.distinct('name').countDocuments();
+    const response = [
+      {
+        type: "Productos",
+        total_productos: existProducts.length,
+        tipo_productos: tiposProductos,
+      },
+      {
+        type: "Ingresos",
+        generados: 0,
+        por_generar: 0,
+      },
+      {
+        type: "Ventas",
+        generadas: 0,
+        por_generar: 0,
+      }
+    ]
+    return response
+  }
+
+
   const totalProductos = await ProductModel.aggregate([
     {
       $group: {
@@ -222,6 +276,7 @@ const dashboardItemsService = async () => {
       }
     }
   ]);
+
   const tiposProductos = await ProductModel.distinct('name').countDocuments();
 
   const ventasGeneradas = await SaleModel.countDocuments();
@@ -236,7 +291,7 @@ const dashboardItemsService = async () => {
 
   const productosPorGenerar = await ProductModel.aggregate([
     {
-      $match: { quantity: { $gt: 0 } } // Filtrar productos que aún tienen existencias
+      $match: { quantity: { $gt: 0 } }
     },
     {
       $group: {
@@ -248,7 +303,7 @@ const dashboardItemsService = async () => {
 
   const ventasPorGenerar = await ProductModel.aggregate([
     {
-      $match: { quantity: { $gt: 0 } } // Filtrar productos que aún tienen existencias
+      $match: { quantity: { $gt: 0 } }
     },
     {
       $group: {
@@ -258,7 +313,7 @@ const dashboardItemsService = async () => {
     }
   ]);
 
-  // Estructura final
+
   const estadisticas = [
     {
       type: "Productos",

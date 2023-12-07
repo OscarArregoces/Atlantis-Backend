@@ -1,6 +1,6 @@
-# 💻 SGI - BackEnd 
+# 💻 Atlantis - BackEnd 
 
-SGI - Backend is a backend project for an Inventory Management System (IMS). It is a crucial tool for companies that handle physical products. It helps to efficiently manage the flow of products, from the acquisition of raw materials to the delivery of finished products.
+Atlantis - Backend is a backend project for an Inventory Management System (IMS). It is a crucial tool for companies that handle physical products. It helps to efficiently manage the flow of products, from the acquisition of raw materials to the delivery of finished products.
 
 ## 📒 Set Up
 

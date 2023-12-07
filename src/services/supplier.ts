@@ -26,9 +26,11 @@ const updateSupplierById = async (id: string, dataSupplier: Supplier) => {
     return newSupplier;
 };
 const deleteSupplierById = async (id: string) => {
-    const response = await SupplierModel.findOneAndDelete({ _id: id });
-    if (!response) return 'Supplier not found';
-    return response;
+    const supplier = await SupplierModel.findById(id);
+    if (!supplier) return 'Supplier not found';
+    supplier.visibility = false;
+    await supplier.save();
+    return "Supplier deleted";
 };
 
 export {

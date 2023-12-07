@@ -1,4 +1,4 @@
-import { Schema, Types, model } from "mongoose";
+import { Schema, model } from "mongoose";
 
 const SubCategorySchema = new Schema(
     {
@@ -10,6 +10,10 @@ const SubCategorySchema = new Schema(
             ref: 'category',
             type: Schema.Types.ObjectId,
             required: true
+        },
+        visibility:{
+          type: Boolean,
+          default: true
         }
     },
     {

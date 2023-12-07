@@ -22,5 +22,4 @@ const validFieldsDeleteCategory = ({ params }: Request, res: Response, next: Nex
     next();
 };
 
-
 export { validFieldsCreateCategory, validFieldsPatchCategory, validFieldsDeleteCategory };

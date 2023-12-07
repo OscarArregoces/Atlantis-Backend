@@ -7,15 +7,11 @@ const CategorySchema = new Schema(
         name: {
             type: String,
             unique: true
+        },
+        visibility:{
+            type: Boolean,
+            default: true
         }
-        // ,
-        // subCategory: [
-        //     {
-        //         ref: 'subcategory',
-        //         type: Schema.Types.ObjectId,
-        //         default: []
-        //     }
-        // ]
     },
     {
         timestamps: true,

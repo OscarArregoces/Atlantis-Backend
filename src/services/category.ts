@@ -8,7 +8,7 @@ const createNewCategory = async (name: string) => {
     return response;
 };
 const findAllCategories = async () => {
-    const response = await CategoryModel.find().sort({ updatedAt: -1 });
+    const response = await CategoryModel.find({ visibility: true }).sort({ updatedAt: -1 });
     return response;
 };
 const updateCategoryById = async (id: string, dataCategory: Category) => {
@@ -17,9 +17,11 @@ const updateCategoryById = async (id: string, dataCategory: Category) => {
     return newCategory;
 };
 const deleteCategoryById = async (id: string) => {
-    const response = await CategoryModel.findOneAndDelete({ _id: id });
-    if (!response) return 'Category not exist';
-    return response;
+    const category = await CategoryModel.findById(id);
+    if (!category) return 'Category not exist';
+    category.visibility = false;
+    await category.save();
+    return "Category deleted";
 };
 
 

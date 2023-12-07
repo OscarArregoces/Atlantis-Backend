@@ -5,6 +5,10 @@ import { router } from './routes';
 import db from './config/mongo';
 import { createRoles, createUserAndPerson } from './libs/initialSetup';
 
+// var corsOptions = {
+//     origin: 'http://127.0.0.1:5173'
+// }
+
 const PORT = process.env.PORT || 3001;
 const app = express();
 createRoles();
@@ -16,3 +20,6 @@ app.use('/static', express.static('uploads'));
 db().then(() => console.log("Conexion DB lista"))
 
 app.listen(PORT, () => console.log(`Listo por el puerto ${PORT}`));
+
+
+

@@ -8,7 +8,7 @@ const httpResponse = new HttpResponse();
 
 const validTokenSesion = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        if (!req.headers.authorization) return httpResponse.Unauthorized(res, 'Token is required')
+        if (!req.headers.authorization) return httpResponse.Unauthorized(res, 'Token is required');
         const jwtByUser = req.headers.authorization || '';
         const jwt = jwtByUser.split(' ').pop();
         const isUser = verifyToken(`${jwt}`) as { id: string };

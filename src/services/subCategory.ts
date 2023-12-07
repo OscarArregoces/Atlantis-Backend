@@ -1,7 +1,6 @@
 import { SubCategory } from "../interfaces/category";
 import { SubCategoryModel } from "../models/susbcategory";
 
-
 const createNewSubCategory = async (subCategory: SubCategory) => {
     const { name, category } = subCategory;
     const isExist = await SubCategoryModel.findOne({ name: name, category: category });
@@ -11,7 +10,7 @@ const createNewSubCategory = async (subCategory: SubCategory) => {
 };
 
 const findSubCategories = async () => {
-    const response = await SubCategoryModel.find({}).populate('category').sort({ updatedAt: -1 });
+    const response = await SubCategoryModel.find({ visibility: true }).populate('category').sort({ updatedAt: -1 });
     return response;
 };
 const updateSubCategoryById = async (id: string, subCategory: SubCategory) => {
@@ -21,12 +20,14 @@ const updateSubCategoryById = async (id: string, subCategory: SubCategory) => {
     return newSubCategory;
 };
 const deleteSubCategoryById = async (id: string) => {
-    const response = await SubCategoryModel.findOneAndDelete({ _id: id });
-    if (!response) return 'Subcategory not found';
-    return response;
+    const subcategory = await SubCategoryModel.findById(id);
+    if (!subcategory) return 'Subcategory not found';
+    subcategory.visibility = false;
+    await subcategory.save();
+    return "subcategory deleted";
 };
 const findSubcategoryByCategory = async (id: string) => {
-    const response = await SubCategoryModel.find({ category: id }).populate('category');
+    const response = await SubCategoryModel.find({ category: id, visibility: true }).populate('category');
     return response;
 };
 

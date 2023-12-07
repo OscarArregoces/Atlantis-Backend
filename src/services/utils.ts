@@ -58,7 +58,7 @@ const economyService = async () => {
     totalToGenerate += toGenerate;
     totalCurrentQuantity += currentQuantity;
     totalQuantitySold += quantitySold;
-    totalInvested += productInfo.unit_cost !== undefined ? productInfo.unit_cost : 0;
+    totalInvested += productInfo.unit_cost !== undefined ? productInfo.unit_cost * (currentQuantity + quantitySold) : 0;
   }
 
   const result = {
@@ -85,7 +85,6 @@ const dashboardGraphicService = async () => {
     ]
     return response;
   }
-
 
   let salesByDate = await SaleModel.aggregate([
     {
@@ -156,6 +155,7 @@ const dashboardGraphicTranslateService = async (nameProducts: string[]) => {
   const names = products.map((product) => product.name);
   return names;
 }
+
 const dashboardRankingProductsService = async () => {
   const existSales = await SaleModel.find({});
   if (existSales.length === 0) {

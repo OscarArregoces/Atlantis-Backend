@@ -34,7 +34,7 @@ export const createUserAndPerson = async () => {
                 "country": "Colombia",
                 "city": "Riohacha",
                 "phone": "1111111111",
-                "img_url": "/static/default.png",
+                "img_url": "/static/default.jfif",
             }
         );
         await newPersona.save();

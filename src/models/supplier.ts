@@ -25,6 +25,10 @@ const SupplierSchema = new Schema(
             type: String,
             required: true,
             unique: true
+        },
+        visibility:{
+          type: Boolean,
+          default: true
         }
     },
     {

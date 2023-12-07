@@ -12,6 +12,26 @@ npm run dev
 yarn
 yarn dev
 ```
+## Dependencies
+```json
+  "dependencies": {
+    "@types/bcryptjs": "^2.4.4",
+    "@types/jsonwebtoken": "^9.0.3",
+    "@types/nodemailer": "^6.4.14",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.7"
+  }
+```
+
+## 🗂️ Env
+![Environment](/readme/ExampleEnv.png)
+
 ## 🗂️ Folder structure
-![Folder Structure](/public/readme/Folder.png)
+![Folder Structure](/readme/Folder.png)
 
